@@ -23,7 +23,13 @@
 // SOFTWARE.
 
 import Tide
+
+#if os(Linux)
 import Glibc
+#else
+import Darwin
+#endif
+
 
 public enum IPMode {
     case IPV4

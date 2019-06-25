@@ -23,7 +23,13 @@
 // SOFTWARE.
 
 import Tide
+
+#if os(Linux)
 import Glibc
+#else
+import Darwin
+#endif
+
 
 public final class TCPClientSocket {
     private var socket: tcpsock
@@ -61,7 +67,7 @@ public final class TCPClientSocket {
         close()
     }
 
-    public func send(data: UnsafeMutablePointer<Void>, length: Int) throws {
+    public func send(data: UnsafeMutableRawPointer, length: Int) throws {
         if closed {
             throw TCPError(description: "Closed socket")
         }
@@ -87,12 +93,17 @@ public final class TCPClientSocket {
         }
     }
 
-    public func receive(bufferSize bufferSize: Int = 256) throws -> [Int8] {
+    public func receive(bufferSize: Int = 256) throws -> [Int8] {
         if closed {
             throw TCPError(description: "Closed socket")
         }
 
-        var buffer: [Int8] = [Int8](count: bufferSize, repeatedValue: 0)
+        var buffer: [Int8] = [Int8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+            for i in 0..<bufferSize {
+                buffer[i] = 0
+                finalSize = bufferSize
+            }
+        }
         let bytesProcessed = tcprecv(socket, &buffer, bufferSize)
 
         if errno != 0 {
@@ -103,12 +114,17 @@ public final class TCPClientSocket {
         return Array(buffer[0 ..< bytesProcessed])
     }
 
-    public func receive(bufferSize bufferSize: Int = 256, untilDelimiter delimiter: String) throws -> [Int8] {
+    public func receive(bufferSize: Int = 256, untilDelimiter delimiter: String) throws -> [Int8] {
         if closed {
             throw TCPError(description: "Closed socket")
         }
 
-        var buffer: [Int8] = [Int8](count: bufferSize, repeatedValue: 0)
+        var buffer: [Int8] = [Int8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+            for i in 0..<bufferSize {
+                buffer[i] = 0
+                finalSize = bufferSize
+            }
+        }
         let bytesProcessed = tcprecvuntil(socket, &buffer, bufferSize, delimiter, delimiter.utf8.count)
 
         if errno != 0 && errno != ENOBUFS {
@@ -154,22 +170,22 @@ public final class TCPClientSocket {
 extension TCPClientSocket {
     public func sendString(string: String) throws {
         var data = string.utf8.map { Int8($0) }
-        try send(&data, length: data.count)
+        try send(data: &data, length: data.count)
     }
 
-    public func send(inout data: [Int8]) throws {
-        try send(&data, length: data.count)
+    public func send(data: inout [Int8]) throws {
+        try send(data: &data, length: data.count)
     }
 
-    public func receiveString(bufferSize bufferSize: Int = 256, untilDelimiter delimiter: String) throws -> String? {
+    public func receiveString(bufferSize: Int = 256, untilDelimiter delimiter: String) throws -> String? {
         var response = try receive(bufferSize: bufferSize, untilDelimiter: delimiter)
         response.append(0)
-        return String.fromCString(response)
+        return String(response)
     }
 
-    public func receiveString(bufferSize bufferSize: Int = 256) throws -> String? {
+    public func receiveString(bufferSize: Int = 256) throws -> String? {
         var response = try receive(bufferSize: bufferSize)
         response.append(0)
-        return String.fromCString(response)
+        return String(response)
     }
 }

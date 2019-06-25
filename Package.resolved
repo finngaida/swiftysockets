@@ -3,7 +3,7 @@
     "pins": [
       {
         "package": "Tide",
-        "repositoryURL": "/Users/fga/Desktop/Uni/6. Semester/P2P/project/Tide",
+        "repositoryURL": "https://github.com/finngaida/Tide",
         "state": {
           "branch": null,
           "revision": "98c2b166776bdbb9b3e7ae4093dce219dd9b0ad4",

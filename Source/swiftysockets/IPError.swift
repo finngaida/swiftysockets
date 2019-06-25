@@ -23,9 +23,15 @@
 // SOFTWARE.
 
 import Tide
-import Glibc
 
-public struct IPError : ErrorType, CustomStringConvertible {
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
+
+
+public struct IPError : Error, CustomStringConvertible {
     public let description: String
 
     init(description: String, bytesProcessed: Int? = nil) {
@@ -33,6 +39,6 @@ public struct IPError : ErrorType, CustomStringConvertible {
     }
 
     static var lastSystemErrorDescription: String {
-        return String.fromCString(strerror(errno))!
+        return String(strerror(errno))
     }
 }

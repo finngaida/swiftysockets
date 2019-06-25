@@ -23,9 +23,15 @@
 // SOFTWARE.
 
 import Tide
-import Glibc
 
-public struct TCPError : ErrorType, CustomStringConvertible {
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
+
+
+public struct TCPError : Error, CustomStringConvertible {
     public let description: String
     public let bytesProcessed: Int?
 
@@ -35,6 +41,6 @@ public struct TCPError : ErrorType, CustomStringConvertible {
     }
 
     static var lastSystemErrorDescription: String {
-        return String.fromCString(strerror(errno))!
+        return String(strerror(errno))
     }
 }

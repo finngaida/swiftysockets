@@ -23,7 +23,13 @@
 // SOFTWARE.
 
 import Tide
+
+#if os(Linux)
 import Glibc
+#else
+import Darwin
+#endif
+
 
 public final class TCPServerSocket {
     private var socket: tcpsock
@@ -66,7 +72,9 @@ public final class TCPServerSocket {
             throw TCPError(description: "Closed socket")
         }
 
-        let clientSocket = tcpaccept(socket)
+        guard let clientSocket = tcpaccept(socket) else {
+            throw TCPError(description: "Accept failed")
+        }
 
         if errno != 0 {
             let description = TCPError.lastSystemErrorDescription
