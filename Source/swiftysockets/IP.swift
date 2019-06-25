@@ -52,6 +52,9 @@ extension IPMode {
 public struct IP {
     let address: ipaddr
 
+    public var hostname: String?
+    public var port: Int?
+
     public init(port: Int, mode: IPMode = .IPV4) throws {
         self.address = iplocal(nil, Int32(port), mode.code)
 
@@ -71,6 +74,8 @@ public struct IP {
     }
 
     public init(address: String, port: Int, mode: IPMode = .IPV4) throws {
+        self.hostname = address
+        self.port = port
         self.address = ipremote(address, Int32(port), mode.code)
 
         if errno != 0 {
