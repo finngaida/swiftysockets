@@ -7,13 +7,13 @@
 
 import Foundation
 
-extension Array: LosslessStringConvertible where Element == Int8 {
+extension Array: LosslessStringConvertible where Element == UInt8 {
     public init?(_ description: String) {
         self = []
     }
 }
 
-extension UnsafeMutablePointer: LosslessStringConvertible, CustomStringConvertible where Pointee == Int8 {
+extension UnsafeMutablePointer: LosslessStringConvertible, CustomStringConvertible where Pointee == UInt8 {
     public var description: String {
         return "Unsafe mutable pointer"
     }

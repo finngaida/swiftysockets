@@ -41,6 +41,6 @@ public struct TCPError : Error, CustomStringConvertible {
     }
 
     static var lastSystemErrorDescription: String {
-        return String(strerror(errno))
+        return "TCP Error: \(String(describing: strerror(errno)))"
     }
 }

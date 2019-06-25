@@ -39,6 +39,6 @@ public struct IPError : Error, CustomStringConvertible {
     }
 
     static var lastSystemErrorDescription: String {
-        return String(strerror(errno))
+        return "IP Error: \(String(describing: strerror(errno)))"
     }
 }

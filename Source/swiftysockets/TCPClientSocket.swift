@@ -93,12 +93,12 @@ public final class TCPClientSocket {
         }
     }
 
-    public func receive(bufferSize: Int = 256) throws -> [Int8] {
+    public func receive(bufferSize: Int = 256) throws -> [UInt8] {
         if closed {
             throw TCPError(description: "Closed socket")
         }
 
-        var buffer: [Int8] = [Int8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+        var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
@@ -114,12 +114,12 @@ public final class TCPClientSocket {
         return Array(buffer[0 ..< bytesProcessed])
     }
 
-    public func receive(bufferSize: Int = 256, untilDelimiter delimiter: String) throws -> [Int8] {
+    public func receive(bufferSize: Int = 256, untilDelimiter delimiter: String) throws -> [UInt8] {
         if closed {
             throw TCPError(description: "Closed socket")
         }
 
-        var buffer: [Int8] = [Int8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+        var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
@@ -169,11 +169,11 @@ public final class TCPClientSocket {
 
 extension TCPClientSocket {
     public func sendString(string: String) throws {
-        var data = string.utf8.map { Int8($0) }
+        var data = string.utf8.map { UInt8($0) }
         try send(data: &data, length: data.count)
     }
 
-    public func send(data: inout [Int8]) throws {
+    public func send(data: inout [UInt8]) throws {
         try send(data: &data, length: data.count)
     }
 
