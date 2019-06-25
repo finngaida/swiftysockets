@@ -101,12 +101,22 @@ public final class TCPClientSocket {
             throw TCPError(description: "Closed socket")
         }
 
+        #if os(Linux)
+        var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+            for i in 0..<bufferSize {
+                buffer[i] = 0
+                finalSize = bufferSize
+            }
+        }
+        #else
         var buffer: [UInt8] = [UInt8](unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
             }
         }
+        #endif
+
         let bytesProcessed = tcprecv(socket, &buffer, bufferSize)
 
         if errno != 0 {
@@ -122,12 +132,22 @@ public final class TCPClientSocket {
             throw TCPError(description: "Closed socket")
         }
 
+        #if os(Linux)
+        var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+            for i in 0..<bufferSize {
+                buffer[i] = 0
+                finalSize = bufferSize
+            }
+        }
+        #else
         var buffer: [UInt8] = [UInt8](unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
             }
         }
+        #endif
+
         let bytesProcessed = tcprecvuntil(socket, &buffer, bufferSize, delimiter, delimiter.utf8.count)
 
         if errno != 0 && errno != ENOBUFS {
