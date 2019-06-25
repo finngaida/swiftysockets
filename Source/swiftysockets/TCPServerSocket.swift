@@ -43,7 +43,10 @@ public final class TCPServerSocket {
         return tcpfd(socket)
     }
 
+    public var ip: IP?
+
     public init(ip: IP, backlog: Int = 10) throws {
+        self.ip = ip
         self.socket = tcplisten(ip.address, Int32(backlog))
 
         if errno != 0 {

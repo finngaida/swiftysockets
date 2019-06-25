@@ -39,11 +39,14 @@ public final class TCPClientSocket {
         return tcpfd(socket)
     }
 
+    public var ip: IP?
+
     init(socket: tcpsock) {
         self.socket = socket
     }
 
     public init(ip: IP) throws {
+        self.ip = ip
         self.socket = tcpconnect(ip.address)
 
         if errno != 0 {
@@ -98,7 +101,7 @@ public final class TCPClientSocket {
             throw TCPError(description: "Closed socket")
         }
 
-        var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+        var buffer: [UInt8] = [UInt8](unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
@@ -119,7 +122,7 @@ public final class TCPClientSocket {
             throw TCPError(description: "Closed socket")
         }
 
-        var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
+        var buffer: [UInt8] = [UInt8](unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
