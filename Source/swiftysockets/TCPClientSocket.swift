@@ -101,21 +101,13 @@ public final class TCPClientSocket {
             throw TCPError(description: "Closed socket")
         }
 
-        #if os(Linux)
+        // TODO: find out why this doesn't build in Xcode, but with SPM
         var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
             }
         }
-        #else
-        var buffer: [UInt8] = [UInt8](unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
-            for i in 0..<bufferSize {
-                buffer[i] = 0
-                finalSize = bufferSize
-            }
-        }
-        #endif
 
         let bytesProcessed = tcprecv(socket, &buffer, bufferSize)
 
@@ -132,21 +124,13 @@ public final class TCPClientSocket {
             throw TCPError(description: "Closed socket")
         }
 
-        #if os(Linux)
+        // TODO: find out why this doesn't build in Xcode, but with SPM
         var buffer: [UInt8] = [UInt8](_unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
             for i in 0..<bufferSize {
                 buffer[i] = 0
                 finalSize = bufferSize
             }
         }
-        #else
-        var buffer: [UInt8] = [UInt8](unsafeUninitializedCapacity: bufferSize) { (buffer, finalSize) in
-            for i in 0..<bufferSize {
-                buffer[i] = 0
-                finalSize = bufferSize
-            }
-        }
-        #endif
 
         let bytesProcessed = tcprecvuntil(socket, &buffer, bufferSize, delimiter, delimiter.utf8.count)
 
